@@ -1,12 +1,35 @@
 /* ==========================================================================
-   Student Registration Form - validation and interaction logic
+   Student Registration Form - validation + FormSubmit email notifications
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CONFIGURATION (edit this one constant when you are ready)
+   --------------------------------------------------------------------------
+   Destination email that receives the registration notification via the free
+   FormSubmit service (https://formsubmit.co).
+
+   Leave it as '' to keep notifications disabled (the form still works and
+   validates locally). When you set a real address, the FIRST submission
+   triggers a one-time activation email from FormSubmit - click the link it
+   sends before real notifications start arriving.
+
+   This value is intentionally empty in the repository because no host/admin
+   email exists in the project. Set it to the real recipient to activate.
+
+   IMPORTANT: this constant is also used by the tests, which temporarily point
+   it at a placeholder address while stubbing the network request.
+   -------------------------------------------------------------------------- */
+var AppConfig = {
+  formSubmitEmail: ''
+};
 
 (function () {
   'use strict';
 
   var form = document.getElementById('registrationForm');
   var successMessage = document.getElementById('successMessage');
+  var submitError = document.getElementById('submitError');
+  var submitButton = document.getElementById('submitButton');
 
   /* ---------- Helper functions ---------- */
 
@@ -27,6 +50,28 @@
 
     field.closest('.field').classList.remove('field--invalid');
     if (errorEl) errorEl.textContent = '';
+  }
+
+  // Remove all error styling (used after a reset or successful submission)
+  function clearErrors() {
+    form.querySelectorAll('.field--invalid').forEach(function (field) {
+      field.classList.remove('field--invalid');
+    });
+    form.querySelectorAll('.field__error').forEach(function (errorEl) {
+      errorEl.textContent = '';
+    });
+  }
+
+  // Show the page-level submission error (never provider internals)
+  function showSubmitError(message) {
+    submitError.textContent = message;
+    submitError.hidden = false;
+    submitError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideSubmitError() {
+    submitError.textContent = '';
+    submitError.hidden = true;
   }
 
   /* ---------- Individual field validators ----------
@@ -211,6 +256,103 @@
     terms: validateTerms
   };
 
+  /* ---------- Safe payload builder ----------
+     The payload is built field-by-field from an explicit list of safe fields.
+     Password/Confirm Password NEVER appear here, so they cannot be sent to
+     FormSubmit, logged, or included in any network request. */
+
+  function fieldValue(id) {
+    return document.getElementById(id).value.trim();
+  }
+
+  function buildSafePayload() {
+    var gender = form.querySelector('input[name="gender"]:checked');
+    var honeypot = document.getElementById('honey').value.trim();
+
+    return {
+      // FormSubmit options
+      _subject: 'New Student Registration - ' + fieldValue('fullName'),
+      _replyto: fieldValue('email'),
+      _template: 'table',
+      _honey: honeypot,
+
+      // Registration data (whitelist only - no passwords)
+      submission_date: new Date().toLocaleString(),
+      fullName: fieldValue('fullName'),
+      email: fieldValue('email'),
+      phone: fieldValue('phone'),
+      dob: document.getElementById('dob').value,
+      gender: gender ? gender.value : '',
+      course: document.getElementById('course').value,
+      education: document.getElementById('education').value,
+      address: fieldValue('address')
+    };
+  }
+
+  /* ---------- FormSubmit request ---------- */
+
+  function sendToFormSubmit(payload) {
+    var endpoint = 'https://formsubmit.co/ajax/' + AppConfig.formSubmitEmail;
+
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(function (response) {
+      if (!response.ok) {
+        throw new Error('Request failed with HTTP status ' + response.status);
+      }
+      // Try to read the body, but a JSON error must not break a real success.
+      return response.json().catch(function () {
+        return {};
+      });
+    });
+  }
+
+  /* ---------- Submission UX ---------- */
+
+  // Disable the button and show "Submitting..." while a request is in flight
+  function setSubmitting(isSubmitting) {
+    submitButton.disabled = isSubmitting;
+    submitButton.textContent = isSubmitting ? 'Submitting...' : 'Register';
+    form.classList.toggle('form--submitting', isSubmitting);
+  }
+
+  // Shared happy path: clear the form, clear errors, show the success message
+  function showSuccessAndReset() {
+    form.reset();
+    clearErrors();
+    successMessage.hidden = false;
+    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Handles the whole notification + feedback flow after validation passes
+  function submitRegistration() {
+    // Guard: notifications need a configured recipient email.
+    if (!AppConfig.formSubmitEmail) {
+      console.info('Registration notifications are disabled: set AppConfig.formSubmitEmail in script.js.');
+      showSubmitError('Your registration could not be completed right now. Please try again later.');
+      return;
+    }
+
+    setSubmitting(true);
+
+    var payload = buildSafePayload();
+
+    sendToFormSubmit(payload).then(function () {
+      showSuccessAndReset();
+    }).catch(function () {
+      // Generic, non-alarming message. Never leak provider URLs or stack traces.
+      showSubmitError('We could not submit your registration right now. Please check your connection and try again.');
+    }).then(function () {
+      // Always restore the button (message is cleared on the next submit)
+      setSubmitting(false);
+    });
+  }
+
   /* ---------- Form events ---------- */
 
   // Validate a field as soon as the user leaves it (blur)
@@ -248,7 +390,9 @@
 
   // Validate everything when the user tries to submit
   form.addEventListener('submit', function (event) {
-    event.preventDefault(); // never send the data to a server
+    event.preventDefault(); // never send the data to a server or navigate away
+    successMessage.hidden = true;
+    hideSubmitError();
 
     // Run every validator so all problems are shown at once
     var allValid = true;
@@ -257,35 +401,26 @@
     });
 
     if (!allValid) {
-      successMessage.hidden = true;
-
       // Focus the first invalid field for keyboard users
       var firstInvalid = form.querySelector('.field--invalid .field__input, .field--invalid input');
       if (firstInvalid) firstInvalid.focus();
       return;
     }
 
-    // Everything passed: reset the form first, then show the success message
-    // (never reveal the password in the message)
-    form.reset();
-    clearErrors();
-    successMessage.hidden = false;
-    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
+    // Honeypot trap: spam bots fill hidden fields, real users never see them.
+    // We pretend success without sending anything so bots get no feedback.
+    if (document.getElementById('honey').value.trim() !== '') {
+      showSuccessAndReset();
+      return;
+    }
 
-  // Remove all error styling after a reset or successful submission
-  function clearErrors() {
-    form.querySelectorAll('.field--invalid').forEach(function (field) {
-      field.classList.remove('field--invalid');
-    });
-    form.querySelectorAll('.field__error').forEach(function (errorEl) {
-      errorEl.textContent = '';
-    });
-  }
+    submitRegistration();
+  });
 
   form.addEventListener('reset', function () {
     // Reset runs before this, so errors still reference old values - clear them now
     clearErrors();
     successMessage.hidden = true;
+    hideSubmitError();
   });
 })();

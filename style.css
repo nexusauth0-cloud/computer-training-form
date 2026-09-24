@@ -104,6 +104,47 @@ body {
   margin: 0;
 }
 
+/* ---------- Submission error banner ---------- */
+
+.error-banner {
+  background: var(--color-error-bg);
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #7f1d1d;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.error-banner[hidden] {
+  display: none;
+}
+
+/* ---------- Honeypot (anti-spam trap) ---------- */
+
+/* Hidden from view and interaction, but kept in the DOM so spam bots still
+   find and fill it. Not using display:none because bots skip hidden fields. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* ---------- Submitting state ---------- */
+
+.form--submitting .btn--submit {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
 /* ---------- Form sections ---------- */
 
 .form__section {

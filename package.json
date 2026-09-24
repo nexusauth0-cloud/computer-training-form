@@ -1,0 +1,12 @@
+{
+  "name": "student-registration-form",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Student registration form with FormSubmit email notifications",
+  "scripts": {
+    "test": "node tests/run-tests.js"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}

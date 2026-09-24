@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Student Registration Form - a computer training assignment project.">
   <title>Student Registration Form</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +28,12 @@
         </div>
       </div>
 
+      <!-- Inline submission error (shown only when the notification request fails) -->
+      <div id="submitError" class="error-banner" role="alert" aria-live="assertive" hidden></div>
+
       <form id="registrationForm" class="form" novalidate>
+        <!-- Honeypot anti-spam field: visually hidden, real users never fill it -->
+        <input type="text" id="honey" name="_honey" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <fieldset class="form__section">
           <legend class="form__section-title">Personal Information</legend>
 
@@ -135,7 +141,7 @@
         </div>
 
         <div class="form__actions">
-          <button type="submit" class="btn btn--submit">Register</button>
+          <button type="submit" id="submitButton" class="btn btn--submit">Register</button>
           <button type="reset" class="btn btn--reset">Reset</button>
         </div>
       </form>
