@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Registration Form - a computer training assignment project.">
+  <title>Student Registration Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <div class="card">
+      <header class="card__header">
+        <h1 class="card__title">Student Registration Form</h1>
+        <p class="card__subtitle">Please complete the form below to register.</p>
+      </header>
+
+      <!-- Inline success message shown after a valid submission -->
+      <div id="successMessage" class="success" role="status" aria-live="polite" hidden>
+        <svg class="success__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <div>
+          <strong>Registration successful!</strong>
+          <p>Your details have been submitted.</p>
+        </div>
+      </div>
+
+      <form id="registrationForm" class="form" novalidate>
+        <fieldset class="form__section">
+          <legend class="form__section-title">Personal Information</legend>
+
+          <div class="field">
+            <label class="field__label" for="fullName">Full Name <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="text" id="fullName" name="fullName" placeholder="e.g. Jane Doe" autocomplete="name" required>
+            <p class="field__error" id="fullNameError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="email">Email Address <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="email" id="email" name="email" placeholder="e.g. jane@example.com" autocomplete="email" required>
+            <p class="field__error" id="emailError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="phone">Phone Number <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="tel" id="phone" name="phone" placeholder="e.g. 07012345678" autocomplete="tel" required>
+            <p class="field__error" id="phoneError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="dob">Date of Birth <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="date" id="dob" name="dob" autocomplete="bday" required>
+            <p class="field__error" id="dobError" aria-live="polite"></p>
+          </div>
+
+          <div class="field" id="gender">
+            <span class="field__label" id="genderLabel">Gender <span class="field__required" aria-hidden="true">*</span></span>
+            <div class="field__radio-group" role="radiogroup" aria-labelledby="genderLabel">
+              <label class="field__radio">
+                <input type="radio" name="gender" value="Male" required>
+                <span>Male</span>
+              </label>
+              <label class="field__radio">
+                <input type="radio" name="gender" value="Female" required>
+                <span>Female</span>
+              </label>
+              <label class="field__radio">
+                <input type="radio" name="gender" value="Other" required>
+                <span>Other</span>
+              </label>
+            </div>
+            <p class="field__error" id="genderError" aria-live="polite"></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__section-title">Course &amp; Education</legend>
+
+          <div class="field">
+            <label class="field__label" for="course">Course <span class="field__required" aria-hidden="true">*</span></label>
+            <select class="field__input" id="course" name="course" required>
+              <option value="">Select a course…</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Data Analysis">Data Analysis</option>
+              <option value="Computer Basics">Computer Basics</option>
+            </select>
+            <p class="field__error" id="courseError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="education">Education Level <span class="field__required" aria-hidden="true">*</span></label>
+            <select class="field__input" id="education" name="education" required>
+              <option value="">Select your education level…</option>
+              <option value="Secondary School">Secondary School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Other">Other</option>
+            </select>
+            <p class="field__error" id="educationError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="address">Address <span class="field__required" aria-hidden="true">*</span></label>
+            <textarea class="field__input" id="address" name="address" rows="3" placeholder="Street, city, state/region, country" autocomplete="street-address" required></textarea>
+            <p class="field__error" id="addressError" aria-live="polite"></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__section-title">Security</legend>
+
+          <div class="field">
+            <label class="field__label" for="password">Password <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" required>
+            <p class="field__hint">Use at least 8 characters.</p>
+            <p class="field__error" id="passwordError" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="confirmPassword">Confirm Password <span class="field__required" aria-hidden="true">*</span></label>
+            <input class="field__input" type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password" required>
+            <p class="field__error" id="confirmPasswordError" aria-live="polite"></p>
+          </div>
+        </fieldset>
+
+        <div class="field field--terms">
+          <label class="field__checkbox">
+            <input type="checkbox" name="terms" id="terms" required>
+            <span>I agree to the <a href="#" aria-label="Terms and Conditions (opened in a new tab)">Terms &amp; Conditions</a> <span class="field__required" aria-hidden="true">*</span></span>
+          </label>
+          <p class="field__error" id="termsError" aria-live="polite"></p>
+        </div>
+
+        <div class="form__actions">
+          <button type="submit" class="btn btn--submit">Register</button>
+          <button type="reset" class="btn btn--reset">Reset</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

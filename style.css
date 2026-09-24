@@ -1,0 +1,327 @@
+/* ==========================================================================
+   Student Registration Form - stylesheet
+   ========================================================================== */
+
+/* Custom properties (design tokens) for consistent theming */
+:root {
+  --color-bg: #eef2f7;
+  --color-card: #ffffff;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-border: #d1d5db;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  --font: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+}
+
+/* Reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background:
+    radial-gradient(circle at top left, #dbeafe, transparent 60%),
+    radial-gradient(circle at bottom right, #ede9fe, transparent 60%),
+    var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Center the card with flexbox */
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.25rem 2.25rem 2.5rem;
+}
+
+/* ---------- Header ---------- */
+
+.card__header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--color-primary-dark);
+}
+
+.card__subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--color-muted);
+}
+
+/* ---------- Success message ---------- */
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-success-bg);
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #14532d;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.success[hidden] {
+  display: none;
+}
+
+.success__icon {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--color-success);
+}
+
+.success p {
+  margin: 0;
+}
+
+/* ---------- Form sections ---------- */
+
+.form__section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.5rem 1.25rem 1.25rem;
+  margin: 0 0 1.5rem;
+}
+
+.form__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  padding: 0 0.5rem;
+}
+
+/* ---------- Fields ---------- */
+
+.field {
+  margin-top: 1.25rem;
+}
+
+.field__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.field__required {
+  color: var(--color-error);
+}
+
+.field__input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: #fafbfc;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* Visible focus state for keyboard users */
+.field__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  background: #ffffff;
+}
+
+/* Error state: border + icon/text, not color alone */
+.field--invalid .field__input {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.field--invalid .field__input:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.field__error {
+  display: none;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-error);
+}
+
+.field--invalid .field__error {
+  display: block;
+}
+
+/* Hints sit under inputs (e.g. password) */
+.field__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.field--invalid .field__hint {
+  display: none;
+}
+
+/* ---------- Radio group ---------- */
+
+.field__radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.35rem 0;
+}
+
+.field__radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.field__radio input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+}
+
+.field__radio input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Checkbox ---------- */
+
+.field--terms {
+  margin: 0.25rem 0 1.5rem;
+}
+
+.field__checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.93rem;
+  cursor: pointer;
+}
+
+.field__checkbox input {
+  margin-top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+}
+
+.field__checkbox input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.field__checkbox a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ---------- Buttons ---------- */
+
+.form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.btn {
+  flex: 1 1 200px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
+.btn--submit {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn--submit:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn--submit:active {
+  transform: translateY(1px);
+}
+
+.btn--reset {
+  background: #e5e7eb;
+  color: var(--color-text);
+}
+
+.btn--reset:hover {
+  background: #d1d5db;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1.5rem 1.25rem 1.75rem;
+  }
+
+  .card__title {
+    font-size: 1.45rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem 0.5rem;
+  }
+
+  .form__section {
+    padding: 0.25rem 0.9rem 1rem;
+  }
+
+  .field__radio-group {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .btn {
+    flex-basis: 100%;
+  }
+}
