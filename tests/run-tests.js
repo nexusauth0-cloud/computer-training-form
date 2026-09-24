@@ -266,8 +266,9 @@ async function waitVisible(page, sel, hidden) {
 
   /* ---------- Test 10: unconfigured notifications are handled safely ---------- */
 
-  await page.goto(TEST_URL, { waitUntil: 'load' }); // AppConfig.formSubmitEmail stays ''
-  await page.evaluate(() => { window.__fetches = []; });
+  await page.goto(TEST_URL, { waitUntil: 'load' });
+  // Simulate the "not yet configured" state regardless of the default config
+  await page.evaluate(() => { AppConfig.formSubmitEmail = ''; window.__fetches = []; });
   await fillValid(page);
   await page.click('button[type="submit"]');
   await waitVisible(page, '#submitError', false);

@@ -13,14 +13,13 @@
    triggers a one-time activation email from FormSubmit - click the link it
    sends before real notifications start arriving.
 
-   This value is intentionally empty in the repository because no host/admin
-   email exists in the project. Set it to the real recipient to activate.
+   The recipient below is the host/admin email for registration notifications.
 
    IMPORTANT: this constant is also used by the tests, which temporarily point
    it at a placeholder address while stubbing the network request.
    -------------------------------------------------------------------------- */
 var AppConfig = {
-  formSubmitEmail: ''
+  formSubmitEmail: 'ifediora0012@gmail.com'
 };
 
 (function () {
